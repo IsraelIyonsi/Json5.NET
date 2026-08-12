@@ -1,0 +1,2 @@
+* text=auto
+tests/Json5.Net.Tests/fixtures/** -text
