@@ -19,7 +19,7 @@ public sealed class Json5OracleTests
         string json5Text = File.ReadAllText(Path.Combine(FixturesRoot, "misc", "npm-package.json5"));
         string strictJsonText = File.ReadAllText(Path.Combine(FixturesRoot, "misc", "npm-package.json"));
 
-        JsonNode? fromJson5 = Json5.Parse(json5Text);
+        JsonNode? fromJson5 = Json5Convert.Parse(json5Text);
         JsonNode? fromStrictJson = JsonNode.Parse(strictJsonText);
 
         Assert.True(
@@ -32,7 +32,7 @@ public sealed class Json5OracleTests
     {
         string text = File.ReadAllText(Path.Combine(FixturesRoot, "misc", "readme-example.json5"));
 
-        var root = Json5.Parse(text)!.AsObject();
+        var root = Json5Convert.Parse(text)!.AsObject();
 
         Assert.Equal("bar", root["foo"]!.GetValue<string>());
         Assert.True(root["while"]!.GetValue<bool>());

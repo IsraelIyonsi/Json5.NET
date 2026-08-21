@@ -20,7 +20,7 @@ public sealed class Json5StructureTests
     [InlineData("{/* a */\"a\"/* b */:/* c */1/* d */}")]
     public void CommentsAreInsignificantWhitespace(string json5)
     {
-        var node = Json5.Parse(json5)!.AsObject();
+        var node = Json5Convert.Parse(json5)!.AsObject();
 
         Assert.Equal(1, node["a"]!.GetValue<int>());
     }
@@ -31,7 +31,7 @@ public sealed class Json5StructureTests
     [InlineData("[]", 0)]
     public void ArraysAllowTrailingComma(string json5, int expectedCount)
     {
-        var node = Json5.Parse(json5)!.AsArray();
+        var node = Json5Convert.Parse(json5)!.AsArray();
 
         Assert.Equal(expectedCount, node.Count);
     }
@@ -39,7 +39,7 @@ public sealed class Json5StructureTests
     [Fact]
     public void ObjectsAllowTrailingComma()
     {
-        var node = Json5.Parse("{\"a\":1,\"b\":2,}")!.AsObject();
+        var node = Json5Convert.Parse("{\"a\":1,\"b\":2,}")!.AsObject();
 
         Assert.Equal(2, node.Count);
     }
@@ -55,7 +55,7 @@ public sealed class Json5StructureTests
     [InlineData("{a१:1}", "a१")]
     public void UnquotedAndSingleQuotedKeysAreAccepted(string json5, string expectedKey)
     {
-        var node = Json5.Parse(json5)!.AsObject();
+        var node = Json5Convert.Parse(json5)!.AsObject();
 
         Assert.True(node.ContainsKey(expectedKey));
     }
@@ -63,7 +63,7 @@ public sealed class Json5StructureTests
     [Fact]
     public void DuplicateKeys_LastValueWins()
     {
-        var node = Json5.Parse("{\"a\":true,\"a\":false}")!.AsObject();
+        var node = Json5Convert.Parse("{\"a\":true,\"a\":false}")!.AsObject();
 
         Assert.False(node["a"]!.GetValue<bool>());
     }
@@ -74,7 +74,7 @@ public sealed class Json5StructureTests
     [InlineData("false", false)]
     public void TopLevelScalarsAreValid(string json5, bool? expected)
     {
-        var node = Json5.Parse(json5);
+        var node = Json5Convert.Parse(json5);
 
         if (expected is null)
         {
@@ -89,7 +89,7 @@ public sealed class Json5StructureTests
     [Fact]
     public void TopLevelString_IsValid()
     {
-        var node = Json5.Parse("'top level string'");
+        var node = Json5Convert.Parse("'top level string'");
 
         Assert.Equal("top level string", node!.GetValue<string>());
     }
@@ -107,7 +107,7 @@ public sealed class Json5StructureTests
             }
             """;
 
-        var root = Json5.Parse(json5)!.AsObject();
+        var root = Json5Convert.Parse(json5)!.AsObject();
         var users = root["users"]!.AsArray();
 
         Assert.Equal(2, root["count"]!.GetValue<int>());
@@ -121,7 +121,7 @@ public sealed class Json5StructureTests
     {
         string json5 = BuildNestedArray(60);
 
-        var exception = Record.Exception(() => Json5.Parse(json5));
+        var exception = Record.Exception(() => Json5Convert.Parse(json5));
 
         Assert.Null(exception);
     }
@@ -131,7 +131,7 @@ public sealed class Json5StructureTests
     {
         string json5 = BuildNestedArray(1000);
 
-        Assert.Throws<Json5Exception>(() => Json5.Parse(json5));
+        Assert.Throws<Json5Exception>(() => Json5Convert.Parse(json5));
     }
 
     [Theory]
@@ -149,7 +149,7 @@ public sealed class Json5StructureTests
     [InlineData("/* only a comment */")]
     public void MalformedStructure_Throws(string json5)
     {
-        Assert.Throws<Json5Exception>(() => Json5.Parse(json5));
+        Assert.Throws<Json5Exception>(() => Json5Convert.Parse(json5));
     }
 
     [Fact]
@@ -157,7 +157,7 @@ public sealed class Json5StructureTests
     {
         // U+0085 (NEL) is not in the JSON5 JSON5Whitespace/JSON5LineTerminator productions,
         // unlike System.Char.IsWhiteSpace, which over-accepts it.
-        var exception = Assert.Throws<Json5Exception>(() => Json5.Parse("\u0085true"));
+        var exception = Assert.Throws<Json5Exception>(() => Json5Convert.Parse("\u0085true"));
 
         Assert.Equal(1, exception.Line);
         Assert.Equal(1, exception.Column);

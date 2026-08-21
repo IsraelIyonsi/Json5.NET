@@ -11,7 +11,7 @@ namespace Json5;
 /// leading/trailing decimal points, hexadecimal numbers and signed <c>Infinity</c>/<c>NaN</c>,
 /// into <see cref="System.Text.Json"/> values.
 /// </summary>
-public static class Json5
+public static class Json5Convert
 {
     /// <summary>
     /// Parses JSON5 text into a <see cref="JsonNode"/> tree.

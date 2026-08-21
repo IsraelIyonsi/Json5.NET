@@ -3,7 +3,7 @@ using System.Text.Json;
 namespace Json5;
 
 /// <summary>
-/// Thrown when text passed to <see cref="Json5"/> is not valid JSON5. Carries the one-based
+/// Thrown when text passed to <see cref="Json5Convert"/> is not valid JSON5. Carries the one-based
 /// line and column of the character where parsing failed.
 /// </summary>
 public sealed class Json5Exception : JsonException

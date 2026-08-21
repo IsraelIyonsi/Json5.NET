@@ -4,7 +4,7 @@ using Json5;
 namespace Json5.Tests.Api;
 
 /// <summary>
-/// Coverage of <see cref="Json5.Deserialize{T}(string, System.Text.Json.JsonSerializerOptions?)"/>:
+/// Coverage of <see cref="Json5Convert.Deserialize{T}(string, System.Text.Json.JsonSerializerOptions?)"/>:
 /// deserializing JSON5 config text directly into plain .NET types via System.Text.Json.
 /// </summary>
 public sealed class Json5DeserializeTests
@@ -37,7 +37,7 @@ public sealed class Json5DeserializeTests
             }
             """;
 
-        var config = Json5.Deserialize<ServerConfig>(json5, CaseInsensitive);
+        var config = Json5Convert.Deserialize<ServerConfig>(json5, CaseInsensitive);
 
         Assert.Equal("localhost", config!.Host);
         Assert.Equal(8080, config.Port);
@@ -50,7 +50,7 @@ public sealed class Json5DeserializeTests
     {
         const string json5 = "{ warning: 0.8, critical: Infinity }";
 
-        var threshold = Json5.Deserialize<Threshold>(json5, CaseInsensitive);
+        var threshold = Json5Convert.Deserialize<Threshold>(json5, CaseInsensitive);
 
         Assert.Equal(0.8, threshold!.Warning);
         Assert.Equal(double.PositiveInfinity, threshold.Critical);
@@ -61,7 +61,7 @@ public sealed class Json5DeserializeTests
     {
         const string json5 = "{a: 1, b: 2, c: 3}";
 
-        var map = Json5.Deserialize<Dictionary<string, int>>(json5);
+        var map = Json5Convert.Deserialize<Dictionary<string, int>>(json5);
 
         Assert.Equal(new Dictionary<string, int> { ["a"] = 1, ["b"] = 2, ["c"] = 3 }, map);
     }
@@ -71,7 +71,7 @@ public sealed class Json5DeserializeTests
     {
         const string json5 = "[1, 2, 3,]";
 
-        var list = Json5.Deserialize<List<int>>(json5);
+        var list = Json5Convert.Deserialize<List<int>>(json5);
 
         Assert.Equal([1, 2, 3], list);
     }
@@ -79,7 +79,7 @@ public sealed class Json5DeserializeTests
     [Fact]
     public void DeserializesTopLevelNull_ReturnsDefaultForReferenceType()
     {
-        var result = Json5.Deserialize<ServerConfig>("null");
+        var result = Json5Convert.Deserialize<ServerConfig>("null");
 
         Assert.Null(result);
     }
@@ -87,7 +87,7 @@ public sealed class Json5DeserializeTests
     [Fact]
     public void DeserializesPrimitiveInt()
     {
-        var result = Json5.Deserialize<int>("42");
+        var result = Json5Convert.Deserialize<int>("42");
 
         Assert.Equal(42, result);
     }
@@ -95,7 +95,7 @@ public sealed class Json5DeserializeTests
     [Fact]
     public void MalformedInput_ThrowsJson5ExceptionNotSilently()
     {
-        Assert.Throws<Json5Exception>(() => Json5.Deserialize<ServerConfig>("{host:}"));
+        Assert.Throws<Json5Exception>(() => Json5Convert.Deserialize<ServerConfig>("{host:}"));
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public sealed class Json5DeserializeTests
         // repeated calls reuse System.Text.Json's JsonTypeInfo cache instead of discarding it
         // on every call.
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        var method = typeof(Json5).GetMethod(
+        var method = typeof(Json5Convert).GetMethod(
             "WithNamedFloatingPointLiterals",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
 

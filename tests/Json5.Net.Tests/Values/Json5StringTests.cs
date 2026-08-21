@@ -29,7 +29,7 @@ public sealed class Json5StringTests
     [InlineData("'line\\\rcontinuation'", "linecontinuation")]
     public void ParsesToExpectedString(string json5, string expected)
     {
-        var node = Json5.Parse(json5);
+        var node = Json5Convert.Parse(json5);
 
         Assert.Equal(expected, node!.GetValue<string>());
     }
@@ -37,7 +37,7 @@ public sealed class Json5StringTests
     [Fact]
     public void EscapedSingleQuotedStringFixture_MatchesSpec()
     {
-        var node = Json5.Parse("'I can\\'t wait'");
+        var node = Json5Convert.Parse("'I can\\'t wait'");
 
         Assert.Equal("I can't wait", node!.GetValue<string>());
     }
@@ -45,7 +45,7 @@ public sealed class Json5StringTests
     [Fact]
     public void UnicodeEscape_SupportsSurrogatePairs()
     {
-        var node = Json5.Parse("'\\uD83D\\uDE00'");
+        var node = Json5Convert.Parse("'\\uD83D\\uDE00'");
 
         Assert.Equal("\uD83D\uDE00", node!.GetValue<string>());
     }
@@ -63,6 +63,6 @@ public sealed class Json5StringTests
     [InlineData("'digit \\3 mid-string'")]
     public void InvalidStringLiteral_Throws(string json5)
     {
-        Assert.Throws<Json5Exception>(() => Json5.Parse(json5));
+        Assert.Throws<Json5Exception>(() => Json5Convert.Parse(json5));
     }
 }

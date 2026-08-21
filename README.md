@@ -17,7 +17,7 @@ Parse into a `JsonNode` tree:
 ```csharp
 using Json5;
 
-var config = Json5.Parse("""
+var config = Json5Convert.Parse("""
     {
       // served on this port
       host: 'localhost',
@@ -41,7 +41,7 @@ using Json5;
 record ServerConfig(string Host, int Port, string[] AllowedOrigins);
 
 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-var config = Json5.Deserialize<ServerConfig>(File.ReadAllText("appsettings.json5"), options);
+var config = Json5Convert.Deserialize<ServerConfig>(File.ReadAllText("appsettings.json5"), options);
 ```
 
 Handle malformed config with a real position, not a byte offset into a wall of text:
@@ -51,7 +51,7 @@ using Json5;
 
 try
 {
-    Json5.Parse(configText);
+    Json5Convert.Parse(configText);
 }
 catch (Json5Exception ex)
 {
@@ -85,7 +85,7 @@ Json5.NET's test suite embeds the full [json5-tests](https://github.com/json5/js
 
 ## Notes and limitations
 
-- `Infinity` and `NaN` have no representation in strict JSON text. `Json5.Parse` returns them as ordinary `JsonValue<double>` nodes, so reading them back with `GetValue<double>()` just works. `Json5.Deserialize<T>` always enables `JsonNumberHandling.AllowNamedFloatingPointLiterals` so they land correctly on `double`/`float` members too. If you later write that `JsonNode` tree back out as JSON text yourself, you will hit the same `System.Text.Json` restriction any other non-finite `double` does; that is standard JSON tooling behavior, not something specific to this library.
+- `Infinity` and `NaN` have no representation in strict JSON text. `Json5Convert.Parse` returns them as ordinary `JsonValue<double>` nodes, so reading them back with `GetValue<double>()` just works. `Json5Convert.Deserialize<T>` always enables `JsonNumberHandling.AllowNamedFloatingPointLiterals` so they land correctly on `double`/`float` members too. If you later write that `JsonNode` tree back out as JSON text yourself, you will hit the same `System.Text.Json` restriction any other non-finite `double` does; that is standard JSON tooling behavior, not something specific to this library.
 - Object/array nesting is capped at 64 levels, matching the `System.Text.Json` `JsonDocument` default, so a hostile deeply-nested document fails with a catchable `Json5Exception` rather than a `StackOverflowException`.
 - Duplicate object keys are accepted, with the last value winning, matching both the JSON grammar (which does not forbid duplicates) and the reference JSON5 implementation's behavior.
 

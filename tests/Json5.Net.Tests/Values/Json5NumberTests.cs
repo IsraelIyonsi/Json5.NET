@@ -41,7 +41,7 @@ public sealed class Json5NumberTests
     [InlineData("0x0", 0.0)]
     public void ParsesToExpectedDouble(string json5, double expected)
     {
-        var node = Json5.Parse(json5);
+        var node = Json5Convert.Parse(json5);
 
         Assert.Equal(expected, node!.GetValue<double>());
     }
@@ -55,7 +55,7 @@ public sealed class Json5NumberTests
     [InlineData("-NaN", double.NaN)]
     public void ParsesSignedInfinityAndNaN(string json5, double expected)
     {
-        var node = Json5.Parse(json5);
+        var node = Json5Convert.Parse(json5);
 
         Assert.Equal(expected, node!.GetValue<double>());
     }
@@ -63,7 +63,7 @@ public sealed class Json5NumberTests
     [Fact]
     public void NegativeZeroFloat_PreservesSign()
     {
-        var node = Json5.Parse("-0.0");
+        var node = Json5Convert.Parse("-0.0");
 
         Assert.Equal(0.0, node!.GetValue<double>());
         Assert.True(double.IsNegative(node.GetValue<double>()));
@@ -72,7 +72,7 @@ public sealed class Json5NumberTests
     [Fact]
     public void NegativeZeroHex_PreservesSign()
     {
-        var node = Json5.Parse("-0x0");
+        var node = Json5Convert.Parse("-0x0");
 
         Assert.Equal(0.0, node!.GetValue<double>());
         Assert.True(double.IsNegative(node.GetValue<double>()));
@@ -81,7 +81,7 @@ public sealed class Json5NumberTests
     [Fact]
     public void LargeIntegerLiteral_RoundTripsExactlyAsLong()
     {
-        var node = Json5.Parse("9007199254740993");
+        var node = Json5Convert.Parse("9007199254740993");
 
         Assert.Equal(9007199254740993L, node!.GetValue<long>());
     }
@@ -105,6 +105,6 @@ public sealed class Json5NumberTests
     [InlineData("1e+")]
     public void InvalidNumberLiteral_Throws(string json5)
     {
-        Assert.Throws<Json5Exception>(() => Json5.Parse(json5));
+        Assert.Throws<Json5Exception>(() => Json5Convert.Parse(json5));
     }
 }
